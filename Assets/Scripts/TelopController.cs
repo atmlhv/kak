@@ -9,16 +9,18 @@ public class TelopController : Controller
 
     TelopFrame telopFrame;
 
-    public const float TelopWidth = 1108f;
-    public const float TelopHeight = 101f;
+    //テキストを表示する範囲（一旦全部にする）
+    //public const float TelopFrameWidth = 1108f;
+    public const float TelopFrameHeight = 101f;
 
-    //public float LapTimeHeight { get; private set; }
+    public float TelopFrameWidth { get; private set; }
 
     public override void InitializeManagedItems()
     {
         base.InitializeManagedItems();
         telopFrame = Instantiate(telopFramePrefab, Vector3.zero, Quaternion.identity, transform);
         telopFrame.Initialize(Vector2.zero);
+        TelopFrameWidth = telopFrame.GetComponent<RectTransform>().sizeDelta.x;
     }
 
 

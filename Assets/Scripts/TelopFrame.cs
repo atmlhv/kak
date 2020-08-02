@@ -13,6 +13,7 @@ public class TelopFrame : TelopItem
     {
         //timeController = FindObjectOfType<TimeController>();
         transform.localPosition = t_position;
+        transform.SetSiblingIndex(0);
     }
 
     private void Update()

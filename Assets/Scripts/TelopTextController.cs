@@ -8,7 +8,6 @@ public class TelopTextController : Controller
     TelopText teloptextPrefab;
 
     TelopController telopController;
-    //TimeController timeController;
 
     //LapDataManager.LapTimes lapTimes;
 
@@ -27,26 +26,32 @@ public class TelopTextController : Controller
     public override void InitializeManagedItems()
     {
         base.InitializeManagedItems();
-
         
         telopTextList = new List<TelopText>();
-        //lapTimes = timeController.applicatedLapTimes;
-
-        //一旦仮で1個作る
-        telopTextList.Add(Instantiate(teloptextPrefab, transform));
-        //一旦場所指定を適当に
-        telopTextList[0].Initialize(new Vector2(0,0));
-
     }
-    // Start is called before the first frame update
-    void Start()
+
+    private void AddTelopText()
     {
-        
+        telopTextList.Add(Instantiate(teloptextPrefab, transform));
+        telopTextList[0].Initialize(new Vector2(telopController.TelopFrameWidth, 0), "test");
+
+        //ホントはここでそれっぽいテキストを渡せるようにする
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        
+        //何もないなら追加
+        if (telopTextList.Count <= 0)
+        {
+            AddTelopText();
+        }
+        //先頭のテロップだけ見て消すか判断する
+        if (telopTextList[0].transform.localPosition.x + telopTextList[0].GetComponent<RectTransform>().sizeDelta.x <= 0)
+        {
+            Destroy(telopTextList[0].gameObject);
+            telopTextList.RemoveAt(0);
+        }
     }
 }
