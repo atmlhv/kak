@@ -20,7 +20,6 @@ public class LapTimeItemController : Controller
     public override void InitializeController(GameManager gameManager)
     {
         base.InitializeController(gameManager);
-        Debug.Log("LTC:IMI");
         sideBarController = FindObjectOfType<SideBarController>();
         timeController = FindObjectOfType<TimeController>();
     }
@@ -28,8 +27,7 @@ public class LapTimeItemController : Controller
     public override void InitializeManagedItems()
     {
         base.InitializeManagedItems();
-        Debug.Log("LTC:IMI");
-
+       
         lapTimeItemList = new List<LapTimeItem>();
         lapTimes = timeController.applicatedLapTimes;
         
