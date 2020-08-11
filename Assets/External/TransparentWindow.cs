@@ -54,6 +54,10 @@ public class TransparentWindow : MonoBehaviour
     /// https://docs.microsoft.com/en-us/windows/desktop/api/dwmapi/nf-dwmapi-dwmextendframeintoclientarea
     [DllImport("Dwmapi.dll")]
     private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
+
+    [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
+    private static extern int SetLayeredWindowAttributes(IntPtr hwnd, int crKey, byte bAlpha, int dwFlags);
+
     #endregion
 
     private void Awake()
@@ -64,11 +68,23 @@ public class TransparentWindow : MonoBehaviour
             const int GWL_STYLE = -16;
             const int GWL_EXSTYLE = -20;
             const uint WS_POPUP = 0x80000000;
+            const uint WS_SYSMENU = 0x00080000;
+            const uint WS_CAPTION = 0x00C00000;
             const uint WS_EX_LAYERD = 0x080000;
             const uint WS_EX_TRANSPARENT = 0x00000020;
 
-            SetWindowLong(windowHandle, GWL_STYLE, WS_POPUP);
-            SetWindowLong(windowHandle, GWL_EXSTYLE, WS_EX_LAYERD | WS_EX_TRANSPARENT);
+            //上にバーが出るように
+            SetWindowLong(windowHandle, GWL_STYLE, WS_POPUP | WS_SYSMENU | WS_CAPTION);
+            //透明部分は勝手にマウス貫通するので変更
+            SetWindowLong(windowHandle, GWL_EXSTYLE, WS_EX_LAYERD);
+        }
+
+        { // SetLayeredWindowAttributes
+            const int rgbBlack = 0x00000000;
+            const int LWA_COLORKEY = 1;
+
+            //黒色の部分を透過するように
+            SetLayeredWindowAttributes(windowHandle, rgbBlack, 0, LWA_COLORKEY);
         }
 
         { // SetWindowPos
@@ -87,7 +103,8 @@ public class TransparentWindow : MonoBehaviour
                 cxLeftWidth = -1
             };
 
-            DwmExtendFrameIntoClientArea(windowHandle, ref margins);
+            //いらないのでコメントアウト
+            //DwmExtendFrameIntoClientArea(windowHandle, ref margins);
         }
     }
 #endif // !UNITY_EDITOR && UNITY_STANDALONE_WIN
