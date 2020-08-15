@@ -14,8 +14,8 @@ public static class LapDataManager
             new LapTimes("DQ11S","player1",
             new List<LapTime>()
             {
-                new LapTime(100,9.5f),
-                new LapTime(200,200.5f),
+                new LapTime(100,3f),
+                new LapTime(200,10f),
                 new LapTime(300,300.5f),
                 new LapTime(400,400.5f),
                 new LapTime(500,500.5f),

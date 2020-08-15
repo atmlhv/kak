@@ -7,7 +7,7 @@ public class GameManager : Controller
     public TimeController timeController { get { return GetController<TimeController>(m_timeController, m_childrenControllers); } }
     TimeController m_timeController;
 
-    public SideBarController unitController { get { return GetController<SideBarController>(m_sideBarController, m_childrenControllers); } }
+    public SideBarController sideBarController { get { return GetController<SideBarController>(m_sideBarController, m_childrenControllers); } }
     SideBarController m_sideBarController;
 
     public override void InitializeController(GameManager gameManager)
@@ -36,6 +36,7 @@ public class GameManager : Controller
         if (Input.GetKeyDown(KeyCode.Z))
         {
             timeController.StartClock();
+            sideBarController.lapTimeItemController.StartClock();
         }
 #endif
 

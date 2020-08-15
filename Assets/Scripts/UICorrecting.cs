@@ -12,13 +12,22 @@ public class UICorrecting : MonoBehaviour
 
     bool IsCorrecting = false;
 
-    public void Initialize(RectTransform followTransform)
+    public void Initialize()
     {
-        m_followTransform = followTransform;
         m_rectTransform = GetComponent<RectTransform>();
         m_initialPosition = m_rectTransform.anchoredPosition;
         m_initialScale = m_rectTransform.localScale;
+    }
+
+    public void StartCorrecting(RectTransform followTransform)
+    {
+        m_followTransform = followTransform;
         IsCorrecting = true;
+    }
+
+    public void StopCorrecting()
+    {
+        IsCorrecting = false;
     }
 
     private void Update()

@@ -22,6 +22,9 @@ public class LapTimeItemController : Controller
     [SerializeField]
     RectTransform m_nextNextLapTimeItemScaler;
     Animator m_animator;
+    RectTransform m_rectTransform;
+
+    bool m_IsUpdating = false;
 
     public const string unfocusedLapItemName = "UnfocusedLapTimeItem";
     public const string nextLapItemName = "NextLapTimeItem";
@@ -41,6 +44,7 @@ public class LapTimeItemController : Controller
         lapTimeItemList = new List<LapTimeItem>();
         lapTimes = timeController.applicatedLapTimes;
         m_animator = GetComponent<Animator>();
+        m_rectTransform = GetComponent<RectTransform>();
         
 
         m_lapTimeHeight = lapTimes.lapTimeList.Count + m_focusedLapTimeHeightMultiplier - 1f;
@@ -78,8 +82,7 @@ public class LapTimeItemController : Controller
         lapTimeItemList[0].transform.parent = m_nextLapTimeItemScaler;
 
         lapTimeItemList[m_nextLapIndex].Focus(m_nextLapTimeItemScaler);
-        lapTimeItemList[m_nextLapIndex+1].NextFocus();
-
+        lapTimeItemList[m_nextLapIndex+1].NextFocus(m_nextNextLapTimeItemScaler);
         
         m_animator.SetTrigger("Initialize");
 
@@ -99,18 +102,68 @@ public class LapTimeItemController : Controller
     {
         if(m_nextLapIndex < timeController.nextLapIndex)
         {
-            UpdateNextLapIndex();
+            if (m_IsUpdating == false)
+            {
+                UpdateNextLapIndex();
+            }
         }
         
     }
 
     private void UpdateNextLapIndex()
     {
+        m_IsUpdating = true;
+        m_animator.SetTrigger("UpdateLap");
+    }
+
+    public void UnfocusAnimationCallback()
+    {
+        //scalerから子供を剥がす
+        lapTimeItemList[m_nextLapIndex].UnsetScaler(m_rectTransform);
+        if(m_nextLapIndex < lapTimeItemList.Count - 1)
+        {
+            lapTimeItemList[m_nextLapIndex + 1].UnsetScaler(m_rectTransform);
+        }
+
+        //nextNextScalerのpivotを戻す
+        SetYPivotInRuntime(m_nextNextLapTimeItemScaler, 1f);
+
+        //Scalerの位置を動かす
+        m_nextLapTimeItemScaler.anchoredPosition = AnchoredPositionInSideBar(m_nextLapIndex + 1,m_lapTimeHeight);
+        m_nextNextLapTimeItemScaler.anchoredPosition = AnchoredPositionInSideBar(m_nextLapIndex + 4, m_lapTimeHeight);
+
+        m_nextLapTimeItemScaler.localScale = Vector2.right + Vector2.up * m_focusedLapTimeHeightMultiplier;
+        m_nextNextLapTimeItemScaler.localScale = Vector2.one;
+
+        //LapTimeItemのセッティング
         if (timeController.nextLapIndex > 0)
         {
-            lapTimeItemList[m_nextLapIndex].UnFocus();
+            lapTimeItemList[m_nextLapIndex].UnFocus(m_rectTransform);
         }
         m_nextLapIndex = timeController.nextLapIndex;
-       // lapTimeItemList[m_nextLapIndex].Focus();
+        lapTimeItemList[m_nextLapIndex].Focus(m_nextLapTimeItemScaler);
+        if (timeController.nextLapIndex < lapTimeItemList.Count - 1)
+        {
+            lapTimeItemList[m_nextLapIndex+1].NextFocus(m_nextNextLapTimeItemScaler);
+        }
+        m_IsUpdating = false;
     }
+
+    public void StartClock()
+    {
+        lapTimeItemList[0].StartClock();
+        //m_animator.SetTrigger("StartClock");
+    }
+
+    public void PivotChangeAnimationCallback()
+    {
+        SetYPivotInRuntime(m_nextNextLapTimeItemScaler, 0);
+    }
+
+    public void SetYPivotInRuntime(RectTransform rectTransform, float y_pivot)
+    {
+        rectTransform.pivot = Vector2.right + Vector2.up * y_pivot;
+        rectTransform.anchoredPosition = rectTransform.anchoredPosition + Vector2.down * 2f*(.5f - y_pivot) * rectTransform.sizeDelta.y;
+    }
+    
 }

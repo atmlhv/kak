@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SideBarController : Controller
 {
+
+    public LapTimeItemController lapTimeItemController { get { return GetController<LapTimeItemController>(m_lapTimeItemController, m_childrenControllers); } }
+    LapTimeItemController m_lapTimeItemController;
+
     [SerializeField]
     TimerItem timerItemPrefab;
 
