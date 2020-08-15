@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityRawInput;
 
 public class GameManager : Controller
 {
@@ -19,7 +18,7 @@ public class GameManager : Controller
     public override void InitializeManagedItems()
     {
         base.InitializeManagedItems();
-        RawKeyInput.Start(true);
+       // RawKeyInput.Start(true);
     } 
 
     // Start is called before the first frame update
@@ -32,10 +31,23 @@ public class GameManager : Controller
     // Update is called once per frame
     void Update()
     {
+#if UNITY_EDITOR
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            timeController.StartClock();
+        }
+#endif
+
+
+#if UNITY_STANDALONE_WIN
+        /*
         if (RawKeyInput.IsKeyDown(RawKey.Z))
         {
             timeController.StartClock();
         }
+        */
+#endif
 
         if (Input.GetKeyDown(KeyCode.X))
         {
