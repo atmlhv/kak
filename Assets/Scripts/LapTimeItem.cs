@@ -24,10 +24,16 @@ public class LapTimeItem : SideBarItem
         name.text = t_lapName;
 
         m_uICorrectings = GetComponentsInChildren<UICorrecting>();
+        for(int i = 0; i < m_uICorrectings.Length; i++)
+        {
+            m_uICorrectings[i].Initialize();
+        }
     }
 
-    public void UnFocus()
+    public void UnFocus(RectTransform parentRect)
     {
+        m_IsFocused = false;
+        UnsetScaler(parentRect);
     }
 
     public void Focus(RectTransform parentRect, bool IsTimeStarted = true)
@@ -36,13 +42,30 @@ public class LapTimeItem : SideBarItem
         transform.parent = parentRect;
         for(int i = 0; i < m_uICorrectings.Length; i++)
         {
-            m_uICorrectings[i].Initialize(parentRect);
+            m_uICorrectings[i].StartCorrecting(parentRect);
         }
     }
 
-    public void NextFocus()
+    public void NextFocus(RectTransform parentRect)
     {
-        gameObject.name = LapTimeItemController.nextNextLapItemName;
+        transform.parent = parentRect;
+        for (int i = 0; i < m_uICorrectings.Length; i++)
+        {
+            m_uICorrectings[i].StartCorrecting(parentRect);
+        }
+    }
+
+    public void UnsetScaler(RectTransform parentRect)
+    {
+        transform.parent = parentRect;
+        for (int i = 0; i < m_uICorrectings.Length; i++)
+        {
+            m_uICorrectings[i].StopCorrecting();
+        }
+    }
+
+    public void StartClock()
+    {
 
     }
 
