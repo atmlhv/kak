@@ -11,26 +11,40 @@ public class LapTimeItem : SideBarItem
     [SerializeField]
     Text time;
 
+    UICorrecting[] m_uICorrectings;
+
+    bool m_IsFocused = false;
+
     public void Initialize(float t_time, string t_lapName, Vector2 t_position, Vector2 t_sizeDelta)
     {
-        transform.localPosition = t_position;
         baseImage.rectTransform.sizeDelta = t_sizeDelta;
+        GetComponent<RectTransform>().anchoredPosition = t_position;
 
         time.text = Utility.SecondToText(t_time, false);
         name.text = t_lapName;
+
+        m_uICorrectings = GetComponentsInChildren<UICorrecting>();
     }
 
-    public void Highlight(bool IsOnHighlight)
+    public void UnFocus()
     {
-        if (IsOnHighlight)
+    }
+
+    public void Focus(RectTransform parentRect, bool IsTimeStarted = true)
+    {
+        m_IsFocused = true;
+        transform.parent = parentRect;
+        for(int i = 0; i < m_uICorrectings.Length; i++)
         {
-            name.color = Color.yellow;
-            time.color = Color.yellow;
-        }
-        else
-        {
-            name.color = Color.white;
-            time.color = Color.white;
+            m_uICorrectings[i].Initialize(parentRect);
         }
     }
+
+    public void NextFocus()
+    {
+        gameObject.name = LapTimeItemController.nextNextLapItemName;
+
+    }
+
+
 }

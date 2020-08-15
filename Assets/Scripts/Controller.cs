@@ -13,17 +13,11 @@ public abstract class Controller : MonoBehaviour
     public virtual void InitializeController(GameManager gameManager)
     {
         m_gameManager = gameManager;
-        /*
-        if (m_childrenControllers == null)
-        {
-            m_childrenControllers = new Controller[0];
-        }
-        */
+
         for (int i = 0; i < m_childrenControllers.Length; i++)
         {
             m_childrenControllers[i].InitializeController(gameManager);
         }
-
 
     }
 
